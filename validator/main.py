@@ -1,10 +1,7 @@
 import json
-import string
 from typing import Any, Dict
 
-import rstr
-
-from guardrails.validator_base import (
+from guardrails.validators import (
     FailResult,
     PassResult,
     ValidationResult,
@@ -31,7 +28,7 @@ class IsValidJson(Validator):
         stringified = value
         parsed, error = (None, None)
         try:
-            if type(value) != str:
+            if not isinstance(value, str):
                 stringified = json.dumps(value)
 
             parsed = json.loads(stringified)

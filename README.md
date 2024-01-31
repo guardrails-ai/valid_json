@@ -1,31 +1,102 @@
-# Guardrails Validator Template
-Template repository that hosts a sample validator to be used within GuardrailsHub.
+# IsValidJson Validator
+A Guardrails HUB Validator that checks if a value is parseable as valid JSON.
+This validator can accept strings, dictionaries/objects, and lists and check if they are parseable as JSON.
 
-## How to create a Guardrails Validator
-- On the top right of the page, click "Use this template", select "create a new repository"  and set a name for the package.
-- Modify the class in [validator/main.py](validator/main.py) with source code for the new validator
-    - Make sure that the class still inherits from `Validator` and has the `register_validator` annotation.
-    - Set the `name` in the `register_validator` to the name of the repo and set the appropriate data type.
-- Change [validator/__init__.py](validator/__init__.py) to your new Validator classname instead of RegexMatch
-- Locally test the validator with the test instructions below
+## Usage
+### Standalone
+```py
+from guardrails.validators import PassResult
+from guardrails.hub import IsValidJson
 
-* Note: This package uses a pyproject.toml file, on first run, run `pip install .` to pull down and install all dependencies
+validator = IsValidJson()
 
-### Testing and using your validator
-- Open [test/test-validator.py](test/test-validator.py) to test your new validator 
-- Import your new validator and modify `ValidatorTestObject` accordingly
-- Modify the TEST_OUTPUT and TEST_FAIL_OUTPUT accordingly
-- Run `python test/test-validator.py` via terminal, make sure the returned output reflects the input object 
-- Write advanced tests for failures, etc.
+response = some_llm_client(...)
 
-## Upload your validator to the validator hub
-- Update the [pyproject.toml](pyproject.toml) file and make necessary changes as follows:
-    - Update the `name` field to the name of your validator
-    - Update the `description` field to a short description of your validator
-    - Update the `authors` field to your name and email
-    - Add/update the `dependencies` field to include all dependencies your validator needs.
-- If there are are any post-installation steps such as downloading tokenizers, logging into huggingface etc., update the [post-install.py](validator/post-install.py) file accordingly.
-- You can add additional files to the [validator](validator) directory, but don't rename any existing files/directories.
-    - e.g. Add any environment variables (without the values, just the keys) to the [.env](.env) file.
-- Ensure that there are no other dependencies or any additional steps required to run your validator.
-- Fill out this [form](https://forms.gle/nmxyKwzjypaqvWxbA) to get your new validator onboarded!
+result = validator.validate(response.text)
+
+if isinstance(result, PassResult):
+    print("All good!")
+else:
+    print("LLM respoonse was not valid json!")
+    print(result.error_message)
+```
+
+### From RAIl xml
+```xml
+<rail version="0.1">
+    <output>
+        <string name="text" ... />
+        <float name="score" ... />
+        <object
+            name="metadata"
+            description="The metadata associated with the generated text"
+            validators="hub://guardrails/is_valid_json"
+        >
+            <string name="key_1" description="description of key_1" />
+            ...
+        </object>
+    </output>
+</rail>
+```
+
+```py
+from guardrails import Guard
+from rich import print as rich_print
+
+guard = Guard.from_rail("my_rail.rail")
+
+response = some_llm_client(...)
+
+result = guard.parse(response.text)
+
+if result.validation_passed:
+    print("All good!")
+else:
+    print("Validation failed!")
+    rich_print(guard.history.last.tree)
+```
+
+### From a Code-First Guard
+```py
+from guardrails import Guard
+from guardrails.hub import IsValidJson
+from pydantic import BaseModel, Field
+from rich import print as rich_print
+
+class GeneratedContent(BaseModel):
+    text: str = Field(...)
+    score: float = Field(...)
+    metadata: Dict = Field(validators=[IsValidJson()])
+
+guard = Guard.from_pydantic(GeneratedContent)
+
+response = some_llm_client(...)
+
+result = guard.parse(response.text)
+
+if result.validation_passed:
+    print("All good!")
+else:
+    print("Validation failed!")
+    rich_print(guard.history.last.tree)
+```
+
+
+## Development
+To run/develop this project locally:
+
+1. Clone this repository
+2. Setup an environment
+    ```sh
+    python3 -m venv ./.venv
+    source ./.venv/bin/activate
+    ```
+3. Install dependendencies
+    ```sh
+    pip install -e ".[dev]"
+    ```
+4. Make any changes necessary
+5. Run the QA suite
+    ```sh
+    make qa
+    ```

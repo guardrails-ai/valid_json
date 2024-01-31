@@ -68,7 +68,7 @@ def test_valid_json(value, model):
 
   response = guard.parse(value)
 
-  assert response.validation_passed == True
+  assert response.validation_passed is True
 
 
 @pytest.mark.parametrize(

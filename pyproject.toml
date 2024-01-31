@@ -14,7 +14,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest"
+    "pyright",
+    "pytest",
+    "ruff"
 ]
 
 [tool.pytest.ini_options]
@@ -23,3 +25,6 @@ addopts = "-rP"
 testpaths = [
     "test"
 ]
+
+[tool.pyright]
+include = ["validator"]

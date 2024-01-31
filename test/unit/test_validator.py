@@ -2,7 +2,7 @@ import pytest
 
 from dataclasses import dataclass
 
-from guardrails.validator_base import PassResult, FailResult
+from guardrails.validators import PassResult, FailResult
 
 from validator.main import IsValidJson
 
