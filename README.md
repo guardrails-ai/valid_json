@@ -1,102 +1,79 @@
-# ValidJson Validator
-A Guardrails HUB Validator that checks if a value is parseable as valid JSON.
-This validator can accept strings, dictionaries/objects, and lists and check if they are parseable as JSON.
+# Overview
 
-## Usage
-### Standalone
-```py
-from guardrails.validators import PassResult
+| Developed by | Guardrails AI |
+| Date of development | Feb 15, 2024 |
+| Validator type | Format |
+| Blog |  |
+| License | Apache 2 |
+| Input/Output | Output |
+
+# Description
+
+This validator ensures that a generated output is is parseable as valid JSON..
+
+# Installation
+
+```bash
+$ guardrails hub install hub://guardrails/valid_json
+```
+
+# Usage Examples
+
+## Validating string output via Python
+
+In this example, we’ll test that a generated value is valid json.
+
+```python
+# Import Guard and Validator
 from guardrails.hub import ValidJson
-
-validator = ValidJson()
-
-response = some_llm_client(...)
-
-result = validator.validate(response.text)
-
-if isinstance(result, PassResult):
-    print("All good!")
-else:
-    print("LLM respoonse was not valid json!")
-    print(result.error_message)
-```
-
-### From RAIl xml
-```xml
-<rail version="0.1">
-    <output>
-        <string name="text" ... />
-        <float name="score" ... />
-        <object
-            name="metadata"
-            description="The metadata associated with the generated text"
-            validators="hub://guardrails/valid_json"
-        >
-            <string name="key_1" description="description of key_1" />
-            ...
-        </object>
-    </output>
-</rail>
-```
-
-```py
 from guardrails import Guard
-from rich import print as rich_print
 
-guard = Guard.from_rail("my_rail.rail")
+# Initialize Validator
+val = ValidJson()
 
-response = some_llm_client(...)
+# Setup Guard
+guard = Guard.from_string(
+    validators=[val, ...],
+)
 
-result = guard.parse(response.text)
-
-if result.validation_passed:
-    print("All good!")
-else:
-    print("Validation failed!")
-    rich_print(guard.history.last.tree)
+guard.parse("{ \"value\": \"a test value\" }")  # Validator passes
+guard.parse( "{ \"value\": \"a test value\", }")  # Validator fails; note the trailing comma
 ```
 
-### From a Code-First Guard
-```py
-from guardrails import Guard
-from guardrails.hub import ValidJson
-from pydantic import BaseModel, Field
-from rich import print as rich_print
+## Validating JSON output via Python
 
+In this example, we verify that a user’s email is specified in lower case.
+
+```python
+# Import Guard and Validator
+from pydantic import BaseModel
+from guardrails.hub import LowerCase
+from guardrails import Guard
+
+val = ValidJson()
+
+# Create Pydantic BaseModel
 class GeneratedContent(BaseModel):
-    text: str = Field(...)
-    score: float = Field(...)
+    text: str
+    score: float
     metadata: Dict = Field(validators=[ValidJson()])
 
-guard = Guard.from_pydantic(GeneratedContent)
+# Create a Guard to check for valid Pydantic output
+guard = Guard.from_pydantic(output_class=UserInfo)
 
-response = some_llm_client(...)
-
-result = guard.parse(response.text)
-
-if result.validation_passed:
-    print("All good!")
-else:
-    print("Validation failed!")
-    rich_print(guard.history.last.tree)
+# Run LLM output generating JSON through guard
+guard.parse("""
+{
+		"text": "this is some generated text",
+        "score": 2
+		"metadata": {
+            "property_1": "some meta data"
+        }
+}
+""")
 ```
 
+# API Reference
 
-## Development
-To run/develop this project locally:
-
-1. Clone this repository
-2. Setup an environment
-    ```sh
-    python3 -m venv ./.venv
-    source ./.venv/bin/activate
-    ```
-3. Install dependendencies
-    ```sh
-    pip install -e ".[dev]"
-    ```
-4. Make any changes necessary
-5. Run the QA suite
-    ```sh
-    make qa
-    ```
+`__init__`
+- `on_fail`: The policy to enact when a validator fails.
