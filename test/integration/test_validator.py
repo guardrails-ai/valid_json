@@ -4,25 +4,25 @@ import pytest
 from guardrails import Guard
 from guardrails.validator_base import ValidatorError
 from pydantic import BaseModel, Field
-from validator import IsValidJson
+from validator import ValidJson
 
 
 class StringTestObject(BaseModel):
     test_val: str = Field(
         validators=[
-            IsValidJson(on_fail="exception")
+            ValidJson(on_fail="exception")
         ]
     )
 class DictionaryTestObject(BaseModel):
     test_val: Dict = Field(
         validators=[
-            IsValidJson(on_fail="exception")
+            ValidJson(on_fail="exception")
         ]
     )
 class ListTestObject(BaseModel):
     test_val: List = Field(
         validators=[
-            IsValidJson(on_fail="exception")
+            ValidJson(on_fail="exception")
         ]
     )
 

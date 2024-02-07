@@ -1,5 +1,5 @@
 [project]
-name = "is-valid-json"
+name = "valid-json"
 version = "0.0.0"
 description = "Validator that checks if the given value is parseable as valid JSON."
 authors = [

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from guardrails.validators import PassResult, FailResult
 
-from validator.main import IsValidJson
+from validator.main import ValidJson
 
 
 @pytest.mark.parametrize(
@@ -25,7 +25,7 @@ from validator.main import IsValidJson
     ]
 )
 def test_valid_json(value):
-  validator = IsValidJson()
+  validator = ValidJson()
 
   result = validator.validate(value, {})
 
@@ -58,7 +58,7 @@ class NonSerializeable:
     ]
 )
 def test_invalid_json(value, error):
-  validator = IsValidJson()
+  validator = ValidJson()
 
   result = validator.validate(value, {})
 

@@ -1,3 +1,3 @@
-from .main import IsValidJson
+from .main import ValidJson
 
-__all__ = ["IsValidJson"]
+__all__ = ["ValidJson"]

@@ -1,4 +1,4 @@
-# IsValidJson Validator
+# ValidJson Validator
 A Guardrails HUB Validator that checks if a value is parseable as valid JSON.
 This validator can accept strings, dictionaries/objects, and lists and check if they are parseable as JSON.
 
@@ -6,9 +6,9 @@ This validator can accept strings, dictionaries/objects, and lists and check if 
 ### Standalone
 ```py
 from guardrails.validators import PassResult
-from guardrails.hub import IsValidJson
+from guardrails.hub import ValidJson
 
-validator = IsValidJson()
+validator = ValidJson()
 
 response = some_llm_client(...)
 
@@ -30,7 +30,7 @@ else:
         <object
             name="metadata"
             description="The metadata associated with the generated text"
-            validators="hub://guardrails/is_valid_json"
+            validators="hub://guardrails/valid_json"
         >
             <string name="key_1" description="description of key_1" />
             ...
@@ -59,14 +59,14 @@ else:
 ### From a Code-First Guard
 ```py
 from guardrails import Guard
-from guardrails.hub import IsValidJson
+from guardrails.hub import ValidJson
 from pydantic import BaseModel, Field
 from rich import print as rich_print
 
 class GeneratedContent(BaseModel):
     text: str = Field(...)
     score: float = Field(...)
-    metadata: Dict = Field(validators=[IsValidJson()])
+    metadata: Dict = Field(validators=[ValidJson()])
 
 guard = Guard.from_pydantic(GeneratedContent)
 

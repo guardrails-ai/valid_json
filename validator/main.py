@@ -10,15 +10,15 @@ from guardrails.validators import (
 )
 
 
-@register_validator(name="guardrails/is_valid_json", data_type=["string", "object", "list"])
-class IsValidJson(Validator):
+@register_validator(name="guardrails/valid_json", data_type=["string", "object", "list"])
+class ValidJson(Validator):
     """Validates that a value is parseable as valid JSON.
 
     **Key Properties**
 
     | Property                      | Description                       |
     | ----------------------------- | --------------------------------- |
-    | Name for `format` attribute   | `hub://guardrails/is_valid_json`  |
+    | Name for `format` attribute   | `hub://guardrails/valid_json`     |
     | Supported data types          | `string`, `list`, `object`        |
     | Programmatic fix              | None                              |
     """  # noqa
