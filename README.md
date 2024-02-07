@@ -9,7 +9,7 @@
 
 # Description
 
-This validator ensures that a generated output is parseable as valid JSON..
+This validator ensures that a generated output is parseable as valid JSON.
 
 # Installation
 
