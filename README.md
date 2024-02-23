@@ -4,7 +4,7 @@
 | --- | --- |
 | Date of development | Feb 15, 2024 |
 | Validator type | Format |
-| Blog |  |
+| Blog | - |
 | License | Apache 2 |
 | Input/Output | Output |
 
@@ -18,7 +18,7 @@ This validator ensures that a generated output is parseable as valid JSON.
 ## Installation
 
 ```bash
-$ guardrails hub install hub://guardrails/valid_json
+guardrails hub install hub://guardrails/valid_json
 ```
 
 ## Usage Examples
@@ -32,50 +32,23 @@ In this example, we’ll test that a generated value is valid json.
 from guardrails.hub import ValidJson
 from guardrails import Guard
 
-# Initialize Validator
-val = ValidJson()
-
 # Setup Guard
-guard = Guard.from_string(
-    validators=[val, ...],
-)
+guard = Guard().use(ValidJson, on_fail="exception")
 
-guard.parse("{ \"value\": \"a test value\" }")  # Validator passes
-guard.parse( "{ \"value\": \"a test value\", }")  # Validator fails; note the trailing comma
+guard.validate('{ "value": "a test value" }')  # Validator passes
+
+try:
+    guard.validate(
+        '{ "value": "a test value", }'
+    )  # Validator fails; note the trailing comma
+except Exception as e:
+    print(e)
+```
+Output:
+```console
+Validation failed for field with errors: Value is not parseable as valid JSON! Reason: Expecting property name enclosed in double quotes: line 1 column 28 (char 27)
 ```
 
-### Validating JSON output via Python
-
-In this example, we verify that a user’s email is specified in lower case.
-
-```python
-# Import Guard and Validator
-from pydantic import BaseModel
-from guardrails.hub import LowerCase
-from guardrails import Guard
-
-val = ValidJson()
-
-# Create Pydantic BaseModel
-class GeneratedContent(BaseModel):
-    text: str
-    score: float
-    metadata: Dict = Field(validators=[ValidJson()])
-
-# Create a Guard to check for valid Pydantic output
-guard = Guard.from_pydantic(output_class=UserInfo)
-
-# Run LLM output generating JSON through guard
-guard.parse("""
-{
-		"text": "this is some generated text",
-        "score": 2
-		"metadata": {
-            "property_1": "some meta data"
-        }
-}
-""")
-```
 
 ## API Reference
 
@@ -92,7 +65,7 @@ Initializes a new instance of the Validator class.
 
 <br>
 
-**`__call__(self, value, metadata={}) → ValidationOutcome`**
+**`__call__(self, value, metadata={}) → ValidationResult`**
 
 <ul>
 
