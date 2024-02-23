@@ -10,7 +10,9 @@ from guardrails.validators import (
 )
 
 
-@register_validator(name="guardrails/valid_json", data_type=["string", "object", "list"])
+@register_validator(
+    name="guardrails/valid_json", data_type=["string", "object", "list"]
+)
 class ValidJson(Validator):
     """Validates that a value is parseable as valid JSON.
 
@@ -18,7 +20,7 @@ class ValidJson(Validator):
 
     | Property                      | Description                       |
     | ----------------------------- | --------------------------------- |
-    | Name for `format` attribute   | `hub://guardrails/valid_json`     |
+    | Name for `format` attribute   | `guardrails/valid_json`           |
     | Supported data types          | `string`, `list`, `object`        |
     | Programmatic fix              | None                              |
     """  # noqa
@@ -36,7 +38,6 @@ class ValidJson(Validator):
             error = json_error
         except TypeError as type_error:
             error = type_error
-
 
         if error or not parsed:
             return FailResult(
