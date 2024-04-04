@@ -25,7 +25,7 @@ class ValidJson(Validator):
     | Programmatic fix              | None                              |
     """  # noqa
 
-    def validate(self, value: Any, metadata: Dict) -> ValidationResult:
+    def validate(self, value: Any, metadata: Dict = {}) -> ValidationResult:
         """Validates that a value is parseable as valid JSON."""
         stringified = value
         parsed, error = (None, None)
