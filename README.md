@@ -20,7 +20,7 @@ This validator ensures that a generated output is parseable as valid JSON.
 ## Installation
 
 ```bash
-guardrails hub install hub://guardrails/valid_json
+$ guardrails hub install hub://guardrails/valid_json
 ```
 
 ## Usage Examples
