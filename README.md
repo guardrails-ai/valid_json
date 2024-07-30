@@ -1,24 +1,26 @@
 ## Overview
 
 | Developed by | Guardrails AI |
-| --- | --- |
 | Date of development | Feb 15, 2024 |
 | Validator type | Format |
-| Blog | - |
+| Blog |  |
 | License | Apache 2 |
 | Input/Output | Output |
 
 ## Description
 
+### Intended Use
 This validator ensures that a generated output is parseable as valid JSON.
 
-## Requirements
-- Dependencies: None
+### Requirements
+
+* Dependencies:
+    - guardrails-ai>=0.4.0
 
 ## Installation
 
 ```bash
-guardrails hub install hub://guardrails/valid_json
+$ guardrails hub install hub://guardrails/valid_json
 ```
 
 ## Usage Examples
@@ -50,7 +52,7 @@ Validation failed for field with errors: Value is not parseable as valid JSON! R
 ```
 
 
-## API Reference
+# API Reference
 
 **`__init__(self, on_fail="noop")`**
 <ul>
